@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <sys/types.h>
+#include <orbis/_types/fs.h>
 #include <orbis/_types/kernel.h>
 #include <orbis/_types/pthread.h>
 #include <orbis/_types/errors.h>
@@ -22,6 +23,15 @@ struct Proc_Stats
 	OrbisKernelTimespec user_cpu_usage_time;	//0x08
 	OrbisKernelTimespec system_cpu_usage_time;  //0x18
 }; //0x28
+
+enum BuzzerType
+{
+	RingOnce = 1,
+	RingThree,
+	LongRing,
+	ThreeLongRing,
+	ThreeLongDoubleBeeps,
+};
 
 // Empty Comment
 int sceKernelDebugOutText(int dbg_channel, const char* text, ...);
@@ -76,11 +86,11 @@ void sceKernelClearGameDirectMemory();
 // Empty Comment
 void sceKernelClockGetres();
 // Empty Comment
-void sceKernelClockGettime();
+int sceKernelClockGettime(OrbisKernelClockid clockId, OrbisKernelTimespec* tp);
 // Empty Comment
 int sceKernelClose(int);
 // Empty Comment
-void sceKernelCloseEventFlag();
+void sceKernelCloseEventFlag(OrbisKernelEventFlag);
 // Empty Comment
 void sceKernelCloseSema();
 // Empty Comment
@@ -138,7 +148,7 @@ int sceKernelFcntl(int, int, ...);
 // Empty Comment
 void sceKernelFlock();
 // Empty Comment
-int sceKernelFstat(int, OrbisKernelStat);
+int sceKernelFstat(int, OrbisKernelStat*);
 // Empty Comment
 int sceKernelFsync(int);
 // Empty Comment
@@ -204,7 +214,9 @@ int sceKernelGetModuleList(OrbisKernelModule *array, size_t size, size_t *availa
 // Empty Comment
 int sceKernelGetOpenPsIdForSystem(void* ret);
 // Empty Comment
-int32_t sceKernelGetPageTableStats(int *, int*, int*, int*);
+int32_t sceKernelGetPageTableStats(int* cpuTotal, int* cpuAvailable, int* gpuTotal, int* gpuAvailable);
+// Empty Comment
+int32_t get_page_table_stats(int vm, uint64_t Table, int* totalOut, int* AvailableOut);
 // Empty Comment
 uint64_t sceKernelGetProcessTime(void);
 // Empty Comment
@@ -256,7 +268,7 @@ void sceKernelIccNvsFlush();
 // Empty Comment
 void sceKernelIccReadPowerBootMessage();
 // Empty Comment
-void sceKernelIccSetBuzzer(int mode);
+void sceKernelIccSetBuzzer(BuzzerType mode);
 // Empty Comment
 void sceKernelIccSetCpuInfoBit();
 // Empty Comment
@@ -338,7 +350,7 @@ int sceKernelNanosleep(const OrbisKernelTimespec *, OrbisKernelTimespec *);
 // Empty Comment
 int sceKernelOpen(const char *, int, OrbisKernelMode);
 // Empty Comment
-void sceKernelOpenEventFlag();
+int sceKernelOpenEventFlag(OrbisKernelEventFlag* eventFlag, const char* EventName);
 // Empty Comment
 void sceKernelOpenSema();
 // Empty Comment
@@ -548,7 +560,7 @@ int scePthreadCondTimedwait(OrbisPthreadCond*, OrbisPthreadMutex*, OrbisKernelUs
 // Empty Comment
 int scePthreadCondWait(OrbisPthreadCond*, OrbisPthreadMutex*);
 // Empty Comment
-int scePthreadCreate(OrbisPthread *, const OrbisPthreadAttr *, void *, void *, const char *);
+int scePthreadCreate(OrbisPthread** thread, const OrbisPthreadAttr* attr, void* (*entry) (void*), void* arg, const char* name);
 // Empty Comment
 int scePthreadDetach(OrbisPthread);
 // Empty Comment
@@ -699,6 +711,12 @@ void scePthreadTimedjoin();
 void scePthreadYield(void);
 // Empty Comment
 int ioctl(int fd, unsigned long request, ...);
+// Empty Comment
+int sceKernelGetCpuTemperature(int32_t* Temperature);
+// Empty Comment
+int sceKernelGetSocSensorTemperature(int, int* Temperature);
+// Empty Comment
+int sysctlbyname(const char* name, void* oldp, size_t* oldlenp, const void* newp, size_t newlen);
 
 #ifdef __cplusplus
 }

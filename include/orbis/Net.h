@@ -176,13 +176,13 @@ void sceNetDuplicateIpStart();
 // Empty Comment
 void sceNetEpollAbort();
 // Empty Comment
-void sceNetEpollControl();
+void sceNetEpollControl(OrbisNetId eid, int op, OrbisNetId id, OrbisNetEpollEvent* event);
 // Empty Comment
 void sceNetEpollCreate();
 // Empty Comment
 void sceNetEpollDestroy();
 // Empty Comment
-void sceNetEpollWait();
+int sceNetEpollWait(OrbisNetId eid, OrbisNetEpollEvent* events, int maxevents, int timeout);
 // Empty Comment
 void sceNetErrnoLoc();
 // Empty Comment
